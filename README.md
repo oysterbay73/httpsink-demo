@@ -3,7 +3,7 @@
 # Introduction
 
 Contains projects to test serilog http sink https://github.com/FantasticFiasco/serilog-sinks-http. Solution originally created to demonstrate
-an issue with .net framework web project logging, now resolved. Other successful project types also included for reference.
+an issue with .net framework web project logging, now partially resolved. Other successful project types also included for reference.
 
 # About the project
 
@@ -31,11 +31,13 @@ created in contoller which mimicked injected logger where problem originally ide
 ## Executing and Debugging
 
 * Recommended that Visual studio is used, set start up project as required and debug (for web projects this will run in iis express).
-* Note that all logger configurations are hard-coded in the applicable project ```Program.cs```, except the framework web project where it is instead in ```Controllers/HomeController.cs```
-* The failing .net framework web project anecdotally appears to fail more quickly then when running in iis over iis express. To run in IIS, bind an IIS site to the site root. To debug attach to the iis worker process.
+* Remaining error in .net framework web app only applies when bound to IIS however. To run in IIS, bind an IIS site to the site root. To debug attach to the iis worker process.
+* Note that all logger configurations are hard-coded in the applicable project ```Program.cs```, except the framework web project where it is instead in ```Global.asax.cs```
 * No valid http target is provided so all requests to push the logs from the files to the http target will fail unless you provide a valid target (```requestUri```).
 * It is not necessary to provide a valid http target to demonstrate the failure in the .net framework web project.
 * When running the framework web project, when the original error occurred, this was ```Serilog.Sinks.Http.Private.Network.HttpLogShipper: System.IO.IOException: The process cannot access the file 'buffer.bookmark' because it is being used by another process```.
+* Error now occurs on IIS recycle. An invalid character is written to the log file at the start of the line on the 1st log record after the recycle. If you have a valid http target set then the log send gets stuck here. 
+* To view, for example, use Notepad++ with language set to json, error line will be highlighted.
 * Note that without a valid http target other expected errors are logged.
 
 
